@@ -19,35 +19,30 @@ interface MonitoringDailyFormProps {
 }
 
 export function MonitoringDailyForm({ form }: MonitoringDailyFormProps) {
-  // Gunakan tanggal hari ini sebagai default, atau tanggal pertama dari data
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const monitoringList = form.watch("monitoring") || [];
 
   useEffect(() => {
-    if (!selectedDate) {
-      const today = format(new Date(), "yyyy-MM-dd");
-      setSelectedDate(today);
-      ensureDateExists(today);
-    }
-  }, []);
+    const today = format(new Date(), "yyyy-MM-dd");
+    const targetDate = selectedDate || today;
 
-  const monitoringList = form.watch("monitoring") || [];
-  
-  const ensureDateExists = (dateStr: string) => {
-    const currentList = form.getValues("monitoring") || [];
-    const exists = currentList.some((m) => m.date === dateStr);
+    if (!selectedDate) {
+      setSelectedDate(targetDate);
+    }
+
+    const exists = monitoringList.some((m) => m.date === targetDate);
     if (!exists) {
       form.setValue("monitoring", [
-        ...currentList,
-        { date: dateStr, sudahDidata: 0, belumSubmit: 0, sudahSubmit: 0 },
+        ...monitoringList,
+        { date: targetDate, sudahDidata: 0, belumSubmit: 0, sudahSubmit: 0 },
       ]);
     }
-  };
+  }, [selectedDate, monitoringList, form]);
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
     if (newDate) {
       setSelectedDate(newDate);
-      ensureDateExists(newDate);
     }
   };
 

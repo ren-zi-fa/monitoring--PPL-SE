@@ -59,7 +59,7 @@ export function MonitoringDailyForm({ form }: MonitoringDailyFormProps) {
 
   return (
     <Card className="border-none shadow-none">
-      <CardContent className="p-0 space-y-6">
+      <CardContent className="p-2 space-y-6 ">
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
           <div className="space-y-1 w-full md:w-auto flex-1">
             <FormLabel className="text-slate-700 dark:text-slate-300">Pilih Tanggal Monitoring</FormLabel>

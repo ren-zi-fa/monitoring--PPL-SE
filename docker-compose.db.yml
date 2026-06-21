@@ -1,0 +1,30 @@
+services:
+  database:
+    image: postgres:16
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - pg_dev:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_DATABASE}
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    profiles:
+      - dev
+    depends_on:
+      - database
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: renzi@mail.com
+      PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  pg_dev:
+  pgadmin_data:

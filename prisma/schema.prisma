@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model MonitoringTarget {
+  idsubsls   String   @id
+  ppl        String
+  desa       String
+  sls        String
+  
+  monitoring MonitoringDaily[]
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model MonitoringDaily {
+  id         String   @id @default(uuid())
+  idsubsls   String
+  target     MonitoringTarget @relation(fields: [idsubsls], references: [idsubsls], onDelete: Cascade)
+  
+  date          DateTime @db.Date
+  sudahDidata   Int      @default(0)
+  belumSubmit   Int      @default(0)
+  sudahSubmit   Int      @default(0)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([idsubsls, date])
+}

@@ -80,7 +80,6 @@ export default function MonitoringPage() {
     <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8 max-w-6xl space-y-8">
       <MonitoringHeader 
         onSave={form.handleSubmit(onSubmit, onError)} 
-        onReset={handleReset}
         isSaving={mutation.isPending}
       />
 

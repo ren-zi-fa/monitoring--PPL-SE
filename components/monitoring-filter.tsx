@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import {
@@ -18,6 +18,24 @@ export function MonitoringFilter({ onSearch }: MonitoringFilterProps) {
   const [selectedPpl, setSelectedPpl] = useState<string>("");
   const [selectedIdsubsls, setSelectedIdsubsls] = useState<string>("");
 
+  useEffect(() => {
+    const savedPpl = localStorage.getItem("monitoring_saved_ppl");
+    const savedIdsubsls = localStorage.getItem("monitoring_saved_idsubsls");
+    
+    if (savedPpl) {
+      setSelectedPpl(savedPpl);
+    }
+    if (savedPpl && savedIdsubsls) {
+      // Validate if the saved idsubsls actually belongs to the saved ppl
+      const isValid = TARGET_DATA.some(t => t.ppl === savedPpl && t.idsubsls === savedIdsubsls);
+      if (isValid) {
+        setSelectedIdsubsls(savedIdsubsls);
+        // Call onSearch to automatically load data on mount
+        setTimeout(() => onSearch(savedIdsubsls), 50); 
+      }
+    }
+  }, [onSearch]);
+
   // Derived options based on selections
   const slsOptions = useMemo(() => {
     if (!selectedPpl) return [];
@@ -28,11 +46,14 @@ export function MonitoringFilter({ onSearch }: MonitoringFilterProps) {
     if (!value) return;
     setSelectedPpl(value);
     setSelectedIdsubsls("");
+    localStorage.setItem("monitoring_saved_ppl", value);
+    localStorage.removeItem("monitoring_saved_idsubsls");
   };
 
   const handleSlsChange = (value: string | null) => {
     if (!value) return;
     setSelectedIdsubsls(value);
+    localStorage.setItem("monitoring_saved_idsubsls", value);
     onSearch(value);
   };
 

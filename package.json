@@ -9,7 +9,7 @@
     "lint": "eslint",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
-    "deploy": "pnpm db:push && pnpm build"
+    "deploy": "npm db:push && npm build"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -46,12 +46,5 @@
     "prisma": "^6.19.3",
     "tailwindcss": "^4",
     "typescript": "^5"
-  },
-  "packageManager": "pnpm@11.0.8+sha512.4c4097e1dd2d42372c4e7fa5a791ff28fc75a484c7ac192e64b1df0fdef17594ba982f9b4fed9adfb3c757846f565b799b2763fb3733d1de1bcb82cf46684912",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@prisma/client",
-      "prisma"
-    ]
   }
 }

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getRekapData } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, ChevronLeft, ChevronRight, Home } from "lucide-react";
+import { Download, ChevronLeft, ChevronRight, Home, Loader2 } from "lucide-react";
 import Link from "next/link";
 import * as XLSX from "xlsx";
 import { TARGET_DATA } from "@/hooks/use-monitoring-data";
@@ -122,16 +122,22 @@ export default function RekapPage() {
   const endDate = endOfWeek(monthEnd, { weekStartsOn: 1 });
   const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
 
+  const totalSudahDidata = data.rawData.reduce((acc, curr) => acc + (curr["Sudah Didata"] || 0), 0);
+  const totalBelumSubmit = data.rawData.reduce((acc, curr) => acc + (curr["Belum Submit"] || 0), 0);
+  const totalSudahSubmit = data.rawData.reduce((acc, curr) => acc + (curr["Sudah Submit"] || 0), 0);
+
   return (
     <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8 max-w-6xl space-y-8">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800 gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
-            Rekap Kalender Global
+            Rekap Data 
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">
             Progress keseluruhan dari semua PPL
+           
           </p>
+          <p> PML : RENZI FEBRIANDIKA</p>
         </div>
         <div className="flex items-center gap-2">
           <Link href="/" className="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 border-border bg-background hover:bg-muted hover:text-foreground h-8 gap-1.5 px-2.5 px-4 py-2">
@@ -143,6 +149,41 @@ export default function RekapPage() {
             Export ke XLSX
           </Button>
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-blue-50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-900/50 shadow-sm">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-blue-800 dark:text-blue-300">Total Sudah Didata</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-blue-900 dark:text-blue-100 flex items-center h-9">
+              {isLoading ? <Loader2 className="w-6 h-6 animate-spin text-blue-500" /> : totalSudahDidata}
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-900/50 shadow-sm">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-amber-800 dark:text-amber-300">Total Belum Submit</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-amber-900 dark:text-amber-100 flex items-center h-9">
+              {isLoading ? <Loader2 className="w-6 h-6 animate-spin text-amber-500" /> : totalBelumSubmit}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-900/50 shadow-sm">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-emerald-800 dark:text-emerald-300">Total Sudah Submit</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100 flex items-center h-9">
+              {isLoading ? <Loader2 className="w-6 h-6 animate-spin text-emerald-500" /> : totalSudahSubmit}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
@@ -185,7 +226,11 @@ export default function RekapPage() {
                     </span>
                   </div>
                   
-                  {dayData && (dayData.sudahDidata > 0 || dayData.belumSubmit > 0 || dayData.sudahSubmit > 0) ? (
+                  {isLoading && isCurrentMonth ? (
+                    <div className="h-full flex items-center justify-center mt-4">
+                      <Loader2 className="w-5 h-5 text-indigo-500 animate-spin" />
+                    </div>
+                  ) : dayData && (dayData.sudahDidata > 0 || dayData.belumSubmit > 0 || dayData.sudahSubmit > 0) ? (
                     <Dialog>
                       <DialogTrigger className="w-full text-left space-y-1 mt-2 cursor-pointer hover:ring-2 hover:ring-indigo-500 hover:ring-offset-1 rounded transition-all focus:outline-none">
                         <div className="text-xs flex justify-between bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-1 rounded">

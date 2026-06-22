@@ -73,7 +73,29 @@ export default function MonitoringPage() {
 
   const onError = (errors: any) => {
     console.log("Validation errors:", errors);
-    toast.error("Validasi gagal. Pastikan semua filter telah dipilih dan nilai tidak kurang dari 0.");
+    
+    let errorMessage = "Validasi gagal. Pastikan semua filter telah dipilih dan nilai tidak kurang dari 0.";
+    
+    // Extract actual validation message if available
+    try {
+      if (errors.monitoring && Array.isArray(errors.monitoring)) {
+        for (const item of errors.monitoring) {
+          if (item) {
+            if (item.sudahDidata?.message) errorMessage = item.sudahDidata.message;
+            else if (item.belumSubmit?.message) errorMessage = item.belumSubmit.message;
+            else if (item.sudahSubmit?.message) errorMessage = item.sudahSubmit.message;
+            else if (item.root?.message) errorMessage = item.root.message;
+            break;
+          }
+        }
+      } else if (errors.idsubsls?.message) {
+        errorMessage = errors.idsubsls.message;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    toast.error(errorMessage);
   };
 
   return (

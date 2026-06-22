@@ -8,11 +8,18 @@ export const monitoringDailySchema = z
     sudahSubmit: z.coerce.number({ invalid_type_error: "Harus berupa angka" }).min(0, "Sudah Submit >= 0"),
   })
   .superRefine((data, ctx) => {
-    if (data.sudahSubmit + data.belumSubmit > data.sudahDidata) {
+    if (data.sudahSubmit > data.sudahDidata) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Total submit tidak boleh melebihi Sudah Didata",
+        message: "Sudah Submit tidak boleh melebihi Sudah Didata",
         path: ["sudahSubmit"],
+      });
+    }
+    if (data.belumSubmit > data.sudahDidata) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Belum Submit tidak boleh melebihi Sudah Didata",
+        path: ["belumSubmit"],
       });
     }
   });

@@ -67,9 +67,7 @@ export function MonitoringDailyForm({ form }: MonitoringDailyFormProps) {
               type="date"
               value={selectedDate}
               onChange={handleDateChange}
-              disabled
-              readOnly
-              className="bg-slate-100 dark:bg-slate-900 w-full md:max-w-[250px] cursor-not-allowed opacity-70"
+              className="bg-slate-50 dark:bg-slate-900 w-full md:max-w-[250px] focus-visible:ring-blue-500"
             />
           </div>
           <div className="text-sm text-slate-500 dark:text-slate-400 text-left md:text-right">

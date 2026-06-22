@@ -79,12 +79,16 @@ export default function MonitoringPage() {
     // Extract actual validation message if available
     try {
       if (errors.monitoring && Array.isArray(errors.monitoring)) {
-        for (const item of errors.monitoring) {
+        for (let i = 0; i < errors.monitoring.length; i++) {
+          const item = errors.monitoring[i];
           if (item) {
-            if (item.sudahDidata?.message) errorMessage = item.sudahDidata.message;
-            else if (item.belumSubmit?.message) errorMessage = item.belumSubmit.message;
-            else if (item.sudahSubmit?.message) errorMessage = item.sudahSubmit.message;
-            else if (item.root?.message) errorMessage = item.root.message;
+            const dateStr = form.getValues(`monitoring.${i}.date`);
+            const prefix = dateStr ? `[Tanggal ${dateStr}] ` : "";
+            
+            if (item.sudahDidata?.message) errorMessage = prefix + item.sudahDidata.message;
+            else if (item.belumSubmit?.message) errorMessage = prefix + item.belumSubmit.message;
+            else if (item.sudahSubmit?.message) errorMessage = prefix + item.sudahSubmit.message;
+            else if (item.root?.message) errorMessage = prefix + item.root.message;
             break;
           }
         }

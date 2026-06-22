@@ -1,28 +1,16 @@
 import { z } from "zod";
 
-const monitoringDailySchema = z
-  .object({
-    date: z.string(),
-    sudahDidata: z.number({ invalid_type_error: "Harus berupa angka" }).min(0, "Sudah Didata >= 0"),
-    belumSubmit: z.number({ invalid_type_error: "Harus berupa angka" }).min(0, "Belum Submit >= 0"),
-    sudahSubmit: z.number({ invalid_type_error: "Harus berupa angka" }).min(0, "Sudah Submit >= 0"),
-  })
-  .superRefine((data, ctx) => {
-    if (data.sudahSubmit + data.belumSubmit > data.sudahDidata) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Total submit tidak boleh melebihi Sudah Didata",
-        path: ["sudahSubmit"],
-      });
-    }
-  });
+const schema = z.coerce.number();
+console.log("Empty string:", schema.parse(""));
+console.log("Empty string + 0:", schema.parse("") + 0);
 
-const data = {
-    date: "2023-10-10",
-    sudahDidata: 8,
-    belumSubmit: 0,
-    sudahSubmit: 8
-};
+const objSchema = z.object({
+  a: z.coerce.number().min(0, "A>=0"),
+  b: z.coerce.number().min(0, "B>=0")
+}).superRefine((data, ctx) => {
+  if (data.a + data.b > 10) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Error", path: ["a"] });
+  }
+});
 
-const result = monitoringDailySchema.safeParse(data);
-console.log(JSON.stringify(result, null, 2));
+console.log("Validating {a: '', b: 1}:", objSchema.safeParse({a: "", b: 1}));
